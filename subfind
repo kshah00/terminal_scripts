@@ -1,0 +1,15 @@
+#!/bin/bash
+
+domain=$1
+
+# Run Subfinder to find subdomains
+echo "Running Subfinder..."
+subdomains=$(subfinder -d $domain -silent)
+
+# Loop through each subdomain and get the HTTP status code
+for subdomain in $subdomains; do
+    #echo "Getting HTTP status code for $subdomain..."
+    status=$(curl -sL -m 5 -w "%{http_code}\\n" "$subdomain" -o /dev/null)
+    echo "$subdomain: $status"
+done
+

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 filename"
+  exit 1
+fi
+
+filename="$1"
+
+if [ ! -f "$filename" ]; then
+  echo "Error: File '$filename' not found"
+  exit 1
+fi
+
+while read -r line; do
+  # Split the line into domain and status code
+  domain="${line%%:*}"
+  status="${line#*: }"
+  ip=$(host "$domain" | awk '/has address/ {print $NF}')
+  echo "$domain: $status, IP: $ip"
+done < "$filename"
+
